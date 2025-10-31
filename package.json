@@ -1,0 +1,23 @@
+{
+  "name": "user-management-lab",
+  "version": "1.0.0",
+  "description": "Bài Lab CI/CD đơn giản về quản lý User với GitHub Actions",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "jest --coverage",
+    "dev": "nodemon server.js"
+  },
+  "keywords": ["nodejs", "express", "cicd", "github-actions"],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.18.2",
+    "body-parser": "^1.20.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^6.3.3",
+    "nodemon": "^3.0.1"
+  }
+}
