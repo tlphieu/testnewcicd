@@ -1,0 +1,116 @@
+name: CI/CD Pipeline
+
+# Kích hoạt workflow khi có push hoặc pull request vào branch main
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  # Job 1: Build và Test
+  test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+    
+    steps:
+    # Bước 1: Checkout code từ repository
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    # Bước 2: Setup Node.js environment
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+    
+    # Bước 3: Cài đặt dependencies
+    - name: Install dependencies
+      run: npm ci
+    
+    # Bước 4: Chạy tests với coverage
+    - name: Run tests
+      run: npm test
+    
+    # Bước 5: Upload coverage reports
+    - name: Upload coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./coverage/lcov.info
+        flags: unittests
+        name: codecov-umbrella
+      if: matrix.node-version == '20.x'
+  
+  # Job 2: Code Quality Check (Lint - tùy chọn)
+  lint:
+    name: Code Quality
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Check code formatting
+      run: echo "✅ Code quality check passed (placeholder)"
+  
+  # Job 3: Deploy (chỉ chạy khi test pass và push vào main)
+  deploy:
+    name: Deploy Application
+    needs: [test, lint]
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    # Đây là placeholder cho deployment thực tế
+    # Trong thực tế, bạn có thể deploy lên Heroku, AWS, Azure, etc.
+    - name: Deploy to Production
+      run: |
+        echo "🚀 Deploying application..."
+        echo "✅ Deployment successful!"
+        echo "📦 Version: ${{ github.sha }}"
+    
+    - name: Send deployment notification
+      run: echo "📢 Deployment completed at $(date)"
+  
+  # Job 4: Security Audit
+  security:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: '20.x'
+    
+    - name: Run security audit
+      run: npm audit --audit-level=moderate
+      continue-on-error: true
