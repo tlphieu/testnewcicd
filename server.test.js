@@ -113,3 +113,15 @@ describe('User API Tests', () => {
     });
   });
 });
+
+// Demonstrates Jenkins CI on a feature branch without changing API behavior.
+describe('POST /api/users required name', () => {
+  test('Rejects creation when name is missing', async () => {
+    const response = await request(app)
+      .post('/api/users')
+      .send({ email: 'missing-name@example.com', age: 22 });
+    expect(response.status).toBe(400);
+    expect(response.body.success).toBe(false);
+    expect(response.body.message).toBe('Name and email are required');
+  });
+});
