@@ -169,7 +169,7 @@ curl http://localhost:3000/health
 3. Xem coverage report trong thư mục `coverage/`
 4. Thử thêm test cases mới
 
-### Phần 3: Setup GitHub Actions (25 phút)
+### Phần 3: Setup GitHub Actions
 
 1. Tạo repository mới trên GitHub
 2. Push code lên GitHub:
