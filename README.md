@@ -76,7 +76,7 @@ DELETE /api/users/:id
 GET /health
 ```
 
-## 🚀 Hướng dẫn chạy Project
+##  Hướng dẫn chạy Project
 
 ### Bước 1: Cài đặt Dependencies
 
@@ -157,14 +157,14 @@ curl http://localhost:3000/health
 
 ## Hướng dẫn thực hiện Lab
 
-### Phần 1: Setup Project (15 phút)
+### Phần 1: Setup Project 
 
 1. Clone repository này
 2. Cài đặt dependencies: `npm install`
 3. Chạy server: `npm start`
 4. Test API bằng curl hoặc Postman
 
-### Phần 2: Viết và chạy Tests (20 phút)
+### Phần 2: Viết và chạy Tests
 
 1. Xem file `server.test.js` để hiểu cấu trúc test
 2. Chạy tests: `npm test`
@@ -187,7 +187,7 @@ curl http://localhost:3000/health
 3. Vào tab **Actions** trên GitHub để xem workflow chạy
 4. Xem logs của từng job (test, lint, deploy, security)
 
-### Phần 4: Thử nghiệm CI/CD (20 phút)
+### Phần 4: Thử nghiệm CI/CD 
 
 1. Tạo một branch mới:
    ```bash
@@ -223,7 +223,7 @@ curl http://localhost:3000/health
 7. Sau khi tests pass, merge PR vào main
 8. Xem deployment tự động chạy
 
-## 🎓 Bài tập mở rộng
+##  Bài tập mở rộng
 
 ### Cấp độ Dễ:
 1. Thêm endpoint tìm kiếm user theo email
