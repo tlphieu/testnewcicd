@@ -1,8 +1,6 @@
-# Bài Lab: CI/CD với GitHub Actions - User Management API
+#  CI/CD với GitHub Actions - User Management API
 
-## Mục tiêu bài Lab
-
-Bài Lab này giúp bạn:
+## Mục tiêu 
 - Xây dựng một REST API đơn giản quản lý User với Node.js/Express
 - Viết unit tests với Jest
 - Thiết lập CI/CD pipeline với GitHub Actions
@@ -223,25 +221,25 @@ curl http://localhost:3000/health
 7. Sau khi tests pass, merge PR vào main
 8. Xem deployment tự động chạy
 
-##  Bài tập mở rộng
+##  Mở rộng
 
-### Cấp độ Dễ:
+### 1
 1. Thêm endpoint tìm kiếm user theo email
 2. Thêm validation cho age (phải > 0 và < 150)
 3. Thêm tests cho các validation mới
 
-### Cấp độ Trung bình:
+### 2
 1. Thêm pagination cho endpoint GET /api/users
 2. Thêm authentication đơn giản (API key)
 3. Setup ESLint và thêm vào CI pipeline
 
-### Cấp độ Khó:
+### 3
 1. Tích hợp database thực (MongoDB/PostgreSQL)
 2. Deploy lên Heroku/AWS/Azure
 3. Thêm Docker support
 4. Setup staging environment
 
-## Tiêu chí đánh giá
+## Tiêu chí
 
 -  API hoạt động đúng với tất cả endpoints
 - Tests đạt coverage > 80%
