@@ -1,0 +1,69 @@
+pipeline {
+    agent any
+    options {
+        timestamps()
+        timeout(time: 15, unit: 'MINUTES')
+        disableConcurrentBuilds()
+        buildDiscarder(logRotator(numToKeepStr: '10'))
+    }
+    stages {
+        stage('1 - Prepare source') {
+            steps {
+                deleteDir()
+                sh '''
+                    cp /source/package.json /source/package-lock.json .
+                    cp /source/server.js /source/server.test.js /source/jest.config.js .
+                    node --version
+                    npm --version
+                '''
+            }
+        }
+        stage('2 - Install dependencies') {
+            steps { sh 'npm ci --include=dev' }
+        }
+        stage('3 - Check syntax') {
+            steps {
+                sh 'node --check server.js && node --check server.test.js && node --check jest.config.js'
+            }
+        }
+        stage('4 - Test API') {
+            steps { sh 'npm test -- --runInBand' }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'coverage/**', allowEmptyArchive: true
+                }
+            }
+        }
+        stage('5 - Smoke test running server') {
+            steps {
+                sh '''
+                    set -eu
+                    PORT=3100 NODE_ENV=production node server.js > server-smoke.log 2>&1 &
+                    server_pid=$!
+                    trap 'kill "$server_pid" 2>/dev/null || true' EXIT
+                    ready=0
+                    for attempt in $(seq 1 20); do
+                        if curl --fail --silent http://127.0.0.1:3100/health > health.json; then
+                            ready=1
+                            break
+                        fi
+                        sleep 1
+                    done
+                    test "$ready" = 1
+                    node -e "const h=require('./health.json'); if(h.status!=='OK') process.exit(1); console.log(h)"
+                    curl --fail --silent http://127.0.0.1:3100/api/users
+                '''
+            }
+        }
+        stage('6 - Audit production dependencies') {
+            steps { sh 'npm audit --omit=dev --audit-level=high' }
+        }
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: 'server-smoke.log,health.json', allowEmptyArchive: true
+        }
+        success { echo 'CI passed. Production deployment is not configured in this local demo.' }
+        failure { echo 'CI failed: open the failed stage in Console Output. Deployment is blocked.' }
+    }
+}

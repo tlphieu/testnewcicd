@@ -1,0 +1,24 @@
+services:
+  jenkins:
+    build: .
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      JAVA_OPTS: "-Djenkins.install.runSetupWizard=false"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - type: bind
+        source: ../
+        target: /source
+        read_only: true
+      - type: bind
+        source: ./init.groovy.d/01-lab.groovy
+        target: /usr/share/jenkins/ref/init.groovy.d/01-lab.groovy
+        read_only: true
+    secrets:
+      - admin_password
+secrets:
+  admin_password:
+    file: .admin-password
+volumes:
+  jenkins_home:
